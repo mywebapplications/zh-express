@@ -53,13 +53,11 @@
 
         methods: {
             login() {
-                console.dir(this)
-                this.isLogin=true
+                this.isLogin = true
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
 
                         this.isLogin = true
-
 
 
                         // this.$store.dispatch('login', this.loginForm).then((result) => {
@@ -79,12 +77,8 @@
                         //     }
                         // })
 
-                        // console.dir(Router1)
-                        // console.dir(_this.$router)
-                        // console.dir(this.$router)
-                        console.dir(this)
-                        this.$router.push({path:'/home'})
-                        this.isLogin=false
+                        this.$router.push({path: '/home'})
+                        this.isLogin = false
                     }
                 })
             }
@@ -100,13 +94,17 @@
     .parent_login {
         width: 100%;
         height: 100%;
+        background-color: rgba(64, 128, 191, 0.97);
+        /*background-color: #55abff;*/
+        padding-top: 10%
+    ;
     }
 
     .login_form {
         width: 300px;
         height: 40%;
         margin: 0 auto;
-        margin-top: 10%;
+        /*margin-top: 20%;*/
         padding-right: 5%;
         padding-left: 5%;
 
