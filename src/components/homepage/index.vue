@@ -90,50 +90,34 @@
                         width="55">
                 </el-table-column>
                 <el-table-column
-                        fixed
-                        prop="date"
-                        label="日期"
-                        width="150">
-                </el-table-column>
-                <el-table-column
-                        prop="name"
-                        label="姓名"
-                        width="120">
+                        prop="num"
+                        label="仓库编号"
+                        width="140">
                 </el-table-column>
                 <el-table-column
                         prop="province"
-                        label="省份"
-                        width="120">
+                        label="扫描人编号"
+                        width="140">
                 </el-table-column>
                 <el-table-column
                         prop="city"
-                        label="市区"
+                        label="扫描类型"
                         width="120">
                 </el-table-column>
                 <el-table-column
                         prop="address"
-                        label="地址"
+                        label="条码编号"
                         width="300">
                 </el-table-column>
                 <el-table-column
                         prop="zip"
-                        label="邮编"
-                        width="120">
+                        label="图片编号"
+                        width="160">
                 </el-table-column>
                 <el-table-column
-                        prop="city"
-                        label="市区"
-                        width="120">
-                </el-table-column>
-                <el-table-column
-                        prop="address"
-                        label="地址"
-                        width="300">
-                </el-table-column>
-                <el-table-column
-                        prop="zip"
-                        label="邮编"
-                        width="120">
+                        prop="date"
+                        label="日期"
+                        width="150">
                 </el-table-column>
                 <el-table-column
                         fixed="right"
@@ -147,7 +131,7 @@
             </el-table>
         </div>
 
-        <div style="margin: 20px 0 0 20px; font-weight: 800">总计：条码数 {{sum_number}}</div>
+        <p style="margin: 20px 0 0 20px; font-weight: 800">总计：条码数 {{sum_number}}</p>
 
         <el-pagination
                 background
@@ -178,33 +162,33 @@
 
                 multipleSelection: [],
                 tableData: [{
+                    num: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333,
                     date: '2016-05-03',
-                    name: '王小虎',
+                }, {
+                    num: '王小虎',
                     province: '上海',
                     city: '普陀区',
                     address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
+                    zip: 200333,
                     date: '2016-05-02',
-                    name: '王小虎',
+                }, {
+                    num: '王小虎',
                     province: '上海',
                     city: '普陀区',
                     address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
-                }, {
+                    zip: 200333,
                     date: '2016-05-04',
-                    name: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
                 }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
+                    num: '王小虎',
                     province: '上海',
                     city: '普陀区',
                     address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333
+                    zip: 200333,
+                    date: '2016-05-01',
                 }],
 
                 sum_number:100,
