@@ -1,147 +1,161 @@
 <template>
-    <!--<div id="app_home">-->
+    <div id="app_home">
 
-    <el-row class="container">
+        <el-row class="container">
 
-        <!--标题栏-->
-        <el-col :span="24" class="topbar">
-            <el-col :span="10" class="logo" :class="isCollapse?'logo-collapse-width':'logo-width'"
-                    style="text-align: center; width: 60px;">
-                <!--<img src="../assets/image/img_logo.png" style="width: 45px; height: 45px; vertical-align: middle; background: rgba(255,255,255,0.55); border-radius: 10px;">-->
+            <!--标题栏-->
+            <el-col :span="24" class="topbar">
+                <el-col :span="10" class="logo" :class="isCollapse?'logo-collapse-width':'logo-width'"
+                        style="text-align: center; width: 60px;">
+                    <!--<img src="../assets/image/img_logo.png" style="width: 45px; height: 45px; vertical-align: middle; background: rgba(255,255,255,0.55); border-radius: 10px;">-->
 
-                <div class="sys_title">智慧物流系统</div>
-            </el-col>
+                    <div class="sys_title">智慧物流系统</div>
+                </el-col>
 
-            <el-col :span="10">
-                <div class="tools" @click.prevent="collapse">
-                    <i class="fa fa-align-justify"></i>
-                </div>
-            </el-col>
+                <el-col :span="10">
+                    <div class="tools" @click.prevent="collapse">
+                        <i class="fa fa-align-justify"></i>
+                    </div>
+                </el-col>
 
-            <el-col :span="4" class="userinfo">
-                <el-dropdown trigger="hover">
+                <el-col :span="4" class="userinfo">
+                    <el-dropdown trigger="hover">
           <span class="el-dropdown-link userinfo-inner"><img
                   src="../../assets/image/img_user_icon.png"/> 账号：{{userName}}</span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>我的消息</el-dropdown-item>
-                        <el-dropdown-item>设置</el-dropdown-item>
-                        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>我的消息</el-dropdown-item>
+                            <el-dropdown-item>设置</el-dropdown-item>
+                            <el-dropdown-item divided @click.native="dialogVisible = true">退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-col>
+
             </el-col>
 
-        </el-col>
+
+            <div class="search_bar">
+
+                <el-input
+                        class="search_item"
+                        placeholder="条码/图片编号"
+                        prefix-icon="el-icon-picture"
+                        v-model="se_code_bar">
+                </el-input>
+                <el-input
+                        class="search_item"
+                        placeholder="扫描人编号"
+                        prefix-icon="el-icon-info"
+                        v-model="se_code_user">
+                </el-input>
+                <el-input
+                        class="search_item"
+                        placeholder="仓库编号"
+                        prefix-icon="el-icon-sort-up"
+                        v-model="se_code_rep">
+                </el-input>
+
+                <el-select v-model="search_type" placeholder="请选择方式" class="search_item">
+                    <el-option
+                            v-for="t in types"
+                            :key="t"
+                            :label="t"
+                            :value="t">
+                    </el-option>
+                </el-select>
+
+                <el-date-picker style="margin-left: 20px"
+                                v-model="search_time"
+                                type="daterange"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                :default-time="['00:00:00', '23:59:59']">
+                </el-date-picker>
 
 
-        <div class="search_bar">
+                <el-button type="primary" @click="handleSearch" icon="el-icon-search" style="margin-left: 20px">查询
+                </el-button>
 
-            <el-input
-                    class="search_item"
-                    placeholder="条码/图片编号"
-                    prefix-icon="el-icon-picture"
-                    v-model="code_bar">
-            </el-input>
-            <el-input
-                    class="search_item"
-                    placeholder="扫描人编号"
-                    prefix-icon="el-icon-info"
-                    v-model="code_user">
-            </el-input>
-            <el-input
-                    class="search_item"
-                    placeholder="仓库编号"
-                    prefix-icon="el-icon-sort-up"
-                    v-model="code_rep">
-            </el-input>
+                <el-button type="primary" @click="handleExport" icon="el-icon-download" style="margin-left: 20px">导出
+                </el-button>
 
-            <el-select v-model="search_type" placeholder="请选择方式" class="search_item">
-                <el-option
-                        v-for="t in types"
-                        :key="t"
-                        :label="t"
-                        :value="t">
-                </el-option>
-            </el-select>
+            </div>
 
-            <el-date-picker style="margin-left: 20px"
-                            v-model="search_time"
-                            type="daterange"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            :default-time="['00:00:00', '23:59:59']">
-            </el-date-picker>
+            <!--table-->
+            <div class="table_box">
+                <el-table
+                        ref="multipleTable"
+                        :data="tableData"
+                        tooltip-effect="dark"
+                        border
+                        @selection-change="handleSelectionChange">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="num"
+                            label="仓库编号"
+                            width="140">
+                    </el-table-column>
+                    <el-table-column
+                            prop="province"
+                            label="扫描人编号"
+                            width="140">
+                    </el-table-column>
+                    <el-table-column
+                            prop="city"
+                            label="扫描类型"
+                            width="120">
+                    </el-table-column>
+                    <el-table-column
+                            prop="address"
+                            label="条码编号"
+                            width="300">
+                    </el-table-column>
+                    <el-table-column
+                            prop="zip"
+                            label="图片编号"
+                            width="160">
+                    </el-table-column>
+                    <el-table-column
+                            prop="date"
+                            label="日期"
+                            width="150">
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作"
+                            width="100">
+                        <template slot-scope="scope">
+                            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                            <el-button type="text" size="small">编辑</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
 
+            <p style="margin: 20px 0 0 20px; font-weight: 800">总计：条码数 {{sum_number}}</p>
 
-            <el-button type="primary" @click="handleSearch" icon="el-icon-search" style="margin-left: 20px">查询</el-button>
+            <!--分页标签-->
+            <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
+            </el-pagination>
+        </el-row>
 
-            <el-button type="primary" @click="handleExport" icon="el-icon-download" style="margin-left: 20px">导出</el-button>
-        </div>
-
-        <!--table-->
-        <div class="table_box">
-            <el-table
-                    ref="multipleTable"
-                    :data="tableData"
-                    tooltip-effect="dark"
-                    border
-                    @selection-change="handleSelectionChange">
-                <el-table-column
-                        type="selection"
-                        width="55">
-                </el-table-column>
-                <el-table-column
-                        prop="num"
-                        label="仓库编号"
-                        width="140">
-                </el-table-column>
-                <el-table-column
-                        prop="province"
-                        label="扫描人编号"
-                        width="140">
-                </el-table-column>
-                <el-table-column
-                        prop="city"
-                        label="扫描类型"
-                        width="120">
-                </el-table-column>
-                <el-table-column
-                        prop="address"
-                        label="条码编号"
-                        width="300">
-                </el-table-column>
-                <el-table-column
-                        prop="zip"
-                        label="图片编号"
-                        width="160">
-                </el-table-column>
-                <el-table-column
-                        prop="date"
-                        label="日期"
-                        width="150">
-                </el-table-column>
-                <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="100">
-                    <template slot-scope="scope">
-                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                        <el-button type="text" size="small">编辑</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
-
-        <p style="margin: 20px 0 0 20px; font-weight: 800">总计：条码数 {{sum_number}}</p>
-
-        <el-pagination
-                background
-                layout="prev, pager, next"
-                :total="1000">
-
-        </el-pagination>
-    </el-row>
-
-    <!--</div>-->
+        <el-dialog
+                title="提示"
+                :visible.sync="dialogVisible"
+                width="30%"
+                center>
+            <span>确定清除用户数据并退出登录？</span>
+            <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="logout">确 定</el-button>
+                </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -153,12 +167,12 @@
                 userName: 'admin',
                 isCollapse: false,
 
-                code_bar:'',
-                code_user:'',
-                code_rep:'',
-                types: ['卸货','上货'],
-                search_type :'',
-                search_time:'',
+                se_code_bar: '',
+                se_code_user: '',
+                se_code_rep: '',
+                types: ['卸货', '上货'],
+                search_type: '',
+                search_time: '',
 
                 multipleSelection: [],
                 tableData: [{
@@ -191,7 +205,9 @@
                     date: '2016-05-01',
                 }],
 
-                sum_number:100,
+                sum_number: 1203,
+
+                dialogVisible: false,
 
             };
         },
@@ -228,12 +244,20 @@
                 this.multipleSelection = val;
             },
 
-            handleSearch(){
+            handleSearch() {
 
             },
 
-            handleExport(){
+            handleExport() {
 
+            },
+
+            //退出登录
+            logout() {
+                this.dialogVisible = false
+                sessionStorage.removeItem('AccessToken');    // 移除用户数据，重新登录
+                sessionStorage.removeItem('userInfo');
+                this.$router.push({path: '/login'})
             }
         },
 
@@ -247,15 +271,14 @@
         //   // }
         // },
         //
+
         mounted() {
-            // console.log("Home. mounted() run")
-            // //加载用户信息
-            // console.dir(sessionStorage)
-            // var user = JSON.parse(sessionStorage.getItem('userInfo'));
-            // if (user) {
-            //   this.sysUserName = user.name || '';
-            //   this.sysUserAvatar = user.iconurl || '';
-            // }
+            //加载用户信息
+            var user = JSON.parse(sessionStorage.getItem('userInfo'));
+            if (user) {
+              this.userName = user.name || '';
+              // this.sysUserAvatar = user.iconurl || '';
+            }
         }
     }
 
@@ -341,7 +364,11 @@
         width: 130px;
     }
 
-    .el-pagination{
+    .el-pagination {
         text-align: right;
+    }
+
+    el-dialog__body {
+        text-align: center;
     }
 </style>

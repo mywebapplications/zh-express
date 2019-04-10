@@ -26,6 +26,8 @@
 
 <script>
 
+    import {url_login} from '../../api/api';
+
     export default {
         name: "Login",
 
@@ -54,35 +56,62 @@
         methods: {
             login() {
                 this.isLogin = true
+                var _this = this
+
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
-
                         this.isLogin = true
+                        var loginParams = {'name': this.loginForm.account, 'password': this.loginForm.checkPass};
 
+                        this.httpRequest.httpPost(url_login, loginParams,
+                            function onSuccess(r) {
+                                _this.loginSuccess(r);
+                            },
+                            function onFail(f) {
 
-                        // this.$store.dispatch('login', this.loginForm).then((result) => {
-                        //     if (result) {
-                        //         this.$confirm(result, '提示', {
-                        //             confirmButtonText: '确定',
-                        //             cancelButtonText: '取消',
-                        //             type: 'warning'
-                        //         }).then(() => {
-                        //             this.loginForm.confirm=true
-                        //             this.handleLogin()
-                        //         }).catch(() => {
-                        //
-                        //         })
-                        //     }else{
-                        //         this.$router.push({name:'home'})
-                        //     }
-                        // })
-
-                        this.$router.push({path: '/home'})
-                        this.isLogin = false
+                                if (_this.loginForm.account === 'admin' && _this.loginForm.checkPass === '123456') {
+                                    //本地测试用
+                                    var r = {
+                                        'status' : 1,
+                                        'result': {
+                                            'result':'本地测试登录成功！',
+                                            'AccessToken':'xxihrYisrUddsnvwpnv245dkncYngpnsd',
+                                            'userInfo':{
+                                                'name':'admin',
+                                                'pwd':'123456'
+                                            }
+                                        }
+                                    }
+                                    _this.loginSuccess(r);
+                                } else {
+                                    //正常情况应该是报错
+                                    _this.isLogin = false;
+                                    _this.$message({
+                                        message: f,
+                                        type: 'error'
+                                    })
+                                }
+                            }, null)
                     }
                 })
-            }
+            },
 
+            //登录成功
+            loginSuccess(res) {
+                this.isLogin = false;
+                this.$message({
+                    message: res.result.result,
+                    type: 'success'
+                })
+                this.saveUserInfo(res.result)
+                this.$router.push({path: '/home'})
+            },
+
+            //保存用户数据
+            saveUserInfo(d) {
+                sessionStorage.setItem("AccessToken", d.AccessToken)
+                sessionStorage.setItem("userInfo", JSON.stringify(d.userInfo))
+            },
         },
 
     }
@@ -96,8 +125,7 @@
         height: 100%;
         background-color: rgba(64, 128, 191, 0.97);
         /*background-color: #55abff;*/
-        padding-top: 10%
-    ;
+        padding-top: 10%;
     }
 
     .login_form {
