@@ -182,6 +182,7 @@
 
     import {url_order_list} from '../../api/api';
     import {url_stypes} from '../../api/api';
+    import {url_order_export} from '../../api/api';
 
     export default {
         name: "homePage",
@@ -276,8 +277,39 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
-            handleExport() {
 
+            //导出
+            handleExport() {
+                this.$message({
+                    message: '正在导出，请稍等...',
+                    type: 'success'
+                })
+                var _this = this
+                var params = {
+                    'pageSize': this.pageSize,
+                    'pageNum': this.pageNum,
+                    'orderBy': this.orderBy ? this.orderBy : null,
+                    'status': this.status ? this.status : null,
+                    'startTime': this.search_time ? this.search_time[0] : null,
+                    'endTime': this.search_time ? this.search_time[1] : null,
+                    'stype': this.se_stype && this.se_stype !== '所有' ? this.se_stype : null,
+                    'num': this.se_num ? this.se_num : null,
+                    'repoNum': this.se_num_repo ? this.se_num_repo : null,
+                    'picNum': this.se_num_pic ? this.se_num_pic : null,
+                    'userNum': this.se_num_user ? this.se_num_user : null
+                };
+                this.httpRequest.httpGet(url_order_export, params,
+                    function onSuccess(r) {
+                        // window.open("https://dlw-bucket1.oss-cn-hangzhou.aliyuncs.com/home/files/temp/excels/WithDrawRecord2019-04-03%2018%3A10%3A42.xls")
+                        window.open(r.result)
+                    },
+                    function onFail(f) {
+                        //正常情况应该是报错
+                        _this.$message({
+                            message: f.result,
+                            type: 'error'
+                        })
+                    }, null)
             },
 
             //分页选择页面
