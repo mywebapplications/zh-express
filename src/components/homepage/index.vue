@@ -37,24 +37,30 @@
 
                 <el-input
                         class="search_item"
-                        placeholder="条码/图片编号"
+                        placeholder="条码编号"
                         prefix-icon="el-icon-picture"
-                        v-model="se_code_bar">
+                        v-model="se_num">
+                </el-input>
+                <el-input
+                        class="search_item"
+                        placeholder="图片编号"
+                        prefix-icon="el-icon-picture"
+                        v-model="se_num_pic">
                 </el-input>
                 <el-input
                         class="search_item"
                         placeholder="扫描人编号"
                         prefix-icon="el-icon-info"
-                        v-model="se_code_user">
+                        v-model="se_num_user">
                 </el-input>
                 <el-input
                         class="search_item"
                         placeholder="仓库编号"
                         prefix-icon="el-icon-sort-up"
-                        v-model="se_code_rep">
+                        v-model="se_num_repo">
                 </el-input>
 
-                <el-select v-model="search_type" placeholder="请选择方式" class="search_item">
+                <el-select v-model="se_stype" placeholder="请选择方式" class="search_item">
                     <el-option
                             v-for="t in types"
                             :key="t"
@@ -72,7 +78,8 @@
                 </el-date-picker>
 
 
-                <el-button type="primary" @click="handleSearch" icon="el-icon-search" style="margin-left: 20px">查询
+                <el-button type="primary" @click="queryDataList(pageSize, pageNum)" icon="el-icon-search"
+                           style="margin-left: 20px">查询
                 </el-button>
 
                 <el-button type="primary" @click="handleExport" icon="el-icon-download" style="margin-left: 20px">导出
@@ -93,34 +100,45 @@
                             width="55">
                     </el-table-column>
                     <el-table-column
-                            prop="num"
+                            prop="repo_num"
                             label="仓库编号"
                             width="140">
                     </el-table-column>
                     <el-table-column
-                            prop="province"
+                            prop="user_num"
                             label="扫描人编号"
                             width="140">
                     </el-table-column>
                     <el-table-column
-                            prop="city"
+                            prop="stype"
                             label="扫描类型"
                             width="120">
                     </el-table-column>
                     <el-table-column
-                            prop="address"
+                            prop="num"
                             label="条码编号"
                             width="300">
                     </el-table-column>
                     <el-table-column
-                            prop="zip"
+                            prop="pic_num"
                             label="图片编号"
                             width="160">
                     </el-table-column>
                     <el-table-column
-                            prop="date"
-                            label="日期"
+                            prop="createtime"
+                            label="录入时间"
                             width="150">
+                        <template scope="scope">
+                            {{scope.row.createtime | parseTime}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="updatetime"
+                            label="更新时间"
+                            width="150">
+                        <template scope="scope">
+                            {{scope.row.updatetime | parseTime}}
+                        </template>
                     </el-table-column>
                     <el-table-column
                             fixed="right"
@@ -140,7 +158,9 @@
             <el-pagination
                     background
                     layout="prev, pager, next"
-                    :total="1000">
+                    :total="sum_number"
+                    :page-size="pageSize"
+                    @current-change="handlePageChange">
             </el-pagination>
         </el-row>
 
@@ -159,6 +179,10 @@
 </template>
 
 <script>
+
+    import {url_order_list} from '../../api/api';
+    import {url_stypes} from '../../api/api';
+
     export default {
         name: "homePage",
         data() {
@@ -167,49 +191,58 @@
                 userName: 'admin',
                 isCollapse: false,
 
-                se_code_bar: '',
-                se_code_user: '',
-                se_code_rep: '',
-                types: ['卸货', '上货'],
-                search_type: '',
-                search_time: '',
+                pageSize: 15,
+                pageNum: 1,
+                ordeyBy: null,
+                status: null,
+                se_num: null,
+                se_num_user: null,
+                se_num_repo: null,
+                se_num_pic: null,
+                types: ['所有', '卸货', '上货'],
+                se_stype: null,
+                search_time: null,
+
 
                 multipleSelection: [],
-                tableData: [{
-                    num: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333,
-                    date: '2016-05-03',
-                }, {
-                    num: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333,
-                    date: '2016-05-02',
-                }, {
-                    num: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333,
-                    date: '2016-05-04',
-                }, {
-                    num: '王小虎',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 200333,
-                    date: '2016-05-01',
-                }],
+                tableData: [
+                    // {
+                    //     createtime: 1555087526000
+                    //     id: 45
+                    //     num: "58315990"
+                    //     pic_addr: "66fe5320a3dd49c7a5df7dce1f1e8857"
+                    //     pic_num: "ae40ey"
+                    //     remarks: null
+                    //     repo_num: "123456"
+                    //     status: 1
+                    //     stype: "卸货"
+                    //     updatetime: 1555087526000
+                    //     user_num: "20190409"
+                    //     xlist: "3945|4084|4080|3941|"
+                    //     ylist: "1952|1956|2120|2116|"
+                    // }
+                ],
 
-                sum_number: 1203,
+                sum_number: 0,
 
                 dialogVisible: false,
 
             };
+        },
+
+        mounted() {
+            //加载用户信息
+            var user = JSON.parse(sessionStorage.getItem('userInfo'));
+            if (user) {
+                this.userName = user.name || '';
+                // this.sysUserAvatar = user.iconurl || '';
+            }
+
+            //请求扫描类型
+            this.getStypes()
+
+            //请求列表
+            this.queryDataList(this.pageSize, this.pageNum)
         },
 
         methods: {
@@ -243,43 +276,76 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
-
-            handleSearch() {
+            handleExport() {
 
             },
 
-            handleExport() {
+            //分页选择页面
+            handlePageChange(i) {
+                console.log("change page")
+                this.pageNum = i
+                this.queryDataList(this.pageSize, i)
+            },
 
+            //查询数据列表
+            queryDataList(pageSize, pageNum) {
+                var _this = this
+                var params = {
+                    'pageSize': pageSize,
+                    'pageNum': pageNum,
+                    'orderBy': this.orderBy ? this.orderBy : null,
+                    'status': this.status ? this.status : null,
+                    'startTime': this.search_time ? this.search_time[0] : null,
+                    'endTime': this.search_time ? this.search_time[1] : null,
+                    'stype': this.se_stype && this.se_stype !== '所有' ? this.se_stype : null,
+                    'num': this.se_num ? this.se_num : null,
+                    'repoNum': this.se_num_repo ? this.se_num_repo : null,
+                    'picNum': this.se_num_pic ? this.se_num_pic : null,
+                    'userNum': this.se_num_user ? this.se_num_user : null
+                };
+                this.httpRequest.httpGet(url_order_list, params,
+                    function onSuccess(r) {
+                        _this.praseList(r.result);
+                    },
+                    function onFail(f) {
+                        //正常情况应该是报错
+                        _this.$message({
+                            message: f.result,
+                            type: 'error'
+                        })
+                    }, null)
+            },
+
+            //解析列表数据
+            praseList(data) {
+                console.dir(data)
+                // this.tableData=[]
+                this.tableData = data.list
+                this.sum_number = data.total
+
+            },
+
+            getStypes(){
+                var _this = this
+                this.httpRequest.httpGet(url_stypes, null,
+                    function onSuccess(r) {
+                        _this.types = []
+                        _this.types.push('所有')
+                        for (let v of r.result) {
+                            _this.types.push(v.svalue)
+                        }
+                    },
+                    null, null)
             },
 
             //退出登录
             logout() {
                 this.dialogVisible = false
-                sessionStorage.removeItem('AccessToken');    // 移除用户数据，重新登录
+                sessionStorage.removeItem('accessToken');    // 移除用户数据，重新登录
                 sessionStorage.removeItem('userInfo');
                 this.$router.push({path: '/login'})
-            }
+            },
         },
-
-
-        // created() {
-        //   console.log("Home. created() run")
-        //   var hasMenu = sessionStorage.getItem('hasMenu');
-        //   console.log("hasMenu? " + hasMenu);
-        //   // if (hasMenu){
-        //   //   this.generateMenu();
-        //   // }
-        // },
-        //
-
-        mounted() {
-            //加载用户信息
-            var user = JSON.parse(sessionStorage.getItem('userInfo'));
-            if (user) {
-              this.userName = user.name || '';
-              // this.sysUserAvatar = user.iconurl || '';
-            }
-        }
     }
 
 

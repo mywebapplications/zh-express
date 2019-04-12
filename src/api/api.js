@@ -13,3 +13,11 @@ var host = host_dev_localhost;
 export const url_login = host + '/user/login';
 //登出
 export const url_logout = host + '/user/logout';
+
+
+//查询订单列表
+export const url_order_list = host + '/order/list';
+//获取条码分类类别
+export const url_stypes = host + '/order/scanTypes';
+//导出订单列表excel
+export const url_order_export = host + '/order/exportOrders';

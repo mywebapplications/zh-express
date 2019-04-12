@@ -69,28 +69,28 @@
                             },
                             function onFail(f) {
 
-                                if (_this.loginForm.account === 'admin' && _this.loginForm.checkPass === '123456') {
-                                    //本地测试用
-                                    var r = {
-                                        'status' : 1,
-                                        'result': {
-                                            'result':'本地测试登录成功！',
-                                            'AccessToken':'xxihrYisrUddsnvwpnv245dkncYngpnsd',
-                                            'userInfo':{
-                                                'name':'admin',
-                                                'pwd':'123456'
-                                            }
-                                        }
-                                    }
-                                    _this.loginSuccess(r);
-                                } else {
+                                // if (_this.loginForm.account === 'admin' && _this.loginForm.checkPass === '123456') {
+                                //     //本地测试用
+                                //     var r = {
+                                //         'status' : 1,
+                                //         'result': {
+                                //             'result':'本地测试登录成功！',
+                                //             'AccessToken':'xxihrYisrUddsnvwpnv245dkncYngpnsd',
+                                //             'userInfo':{
+                                //                 'name':'admin',
+                                //                 'pwd':'123456'
+                                //             }
+                                //         }
+                                //     }
+                                //     _this.loginSuccess(r);
+                                // } else {
                                     //正常情况应该是报错
                                     _this.isLogin = false;
                                     _this.$message({
-                                        message: f,
+                                        message: f.result,
                                         type: 'error'
                                     })
-                                }
+                                // }
                             }, null)
                     }
                 })
@@ -98,6 +98,8 @@
 
             //登录成功
             loginSuccess(res) {
+                console.log("login success res =: ")
+                console.dir(res)
                 this.isLogin = false;
                 this.$message({
                     message: res.result.result,
@@ -109,8 +111,8 @@
 
             //保存用户数据
             saveUserInfo(d) {
-                sessionStorage.setItem("AccessToken", d.AccessToken)
-                sessionStorage.setItem("userInfo", JSON.stringify(d.userInfo))
+                sessionStorage.setItem("accessToken", d.accessToken)
+                sessionStorage.setItem("userInfo", JSON.stringify(d))
             },
         },
 

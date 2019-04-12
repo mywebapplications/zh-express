@@ -25,7 +25,7 @@ export default {
     console.dir(params);
     console.dir('http post >> url=' + url + " p=" + params);
     //axios config
-    var accessToken = sessionStorage.getItem('AccessToken');
+    var accessToken = sessionStorage.getItem('accessToken');
     console.log('token: ' + accessToken);
     axios.defaults.headers.post['Content-Type'] = ' application/json';
     axios.defaults.headers.common['Authorization'] = accessToken;
@@ -65,7 +65,7 @@ export default {
   httpGet(url, params, onSuccess, onError, onLogout) {
     // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     axios.defaults.headers.post['Content-Type'] = ' application/json';
-    axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('AccessToken');
+    axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('accessToken');
     console.dir('http post >> url=' + url + " p=" + params);
     axios.get(url, {params: params})
       .then(function (res) {
