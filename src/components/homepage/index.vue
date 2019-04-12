@@ -102,12 +102,12 @@
                     <el-table-column
                             prop="repo_num"
                             label="仓库编号"
-                            width="140">
+                            width="200">
                     </el-table-column>
                     <el-table-column
                             prop="user_num"
                             label="扫描人编号"
-                            width="140">
+                            width="200">
                     </el-table-column>
                     <el-table-column
                             prop="stype"
@@ -117,17 +117,29 @@
                     <el-table-column
                             prop="num"
                             label="条码编号"
-                            width="300">
+                            width="200">
                     </el-table-column>
                     <el-table-column
                             prop="pic_num"
                             label="图片编号"
-                            width="160">
+                            width="200">
                     </el-table-column>
+
+                    <el-table-column
+                            prop="pic_num"
+                            label="图片"
+                            width="160">
+
+                        <template slot-scope="scope">
+                            <a :href="scope.row.pic_addr" target="_blank">查看图片</a>
+                        </template>
+
+                    </el-table-column>
+
                     <el-table-column
                             prop="createtime"
                             label="录入时间"
-                            width="150">
+                            width="160">
                         <template scope="scope">
                             {{scope.row.createtime | parseTime}}
                         </template>
@@ -135,7 +147,7 @@
                     <el-table-column
                             prop="updatetime"
                             label="更新时间"
-                            width="150">
+                            width="160">
                         <template scope="scope">
                             {{scope.row.updatetime | parseTime}}
                         </template>
@@ -143,7 +155,7 @@
                     <el-table-column
                             fixed="right"
                             label="操作"
-                            width="100">
+                            width="120">
                         <template slot-scope="scope">
                             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
                             <el-button type="text" size="small">编辑</el-button>
@@ -357,7 +369,7 @@
 
             },
 
-            getStypes(){
+            getStypes() {
                 var _this = this
                 this.httpRequest.httpGet(url_stypes, null,
                     function onSuccess(r) {

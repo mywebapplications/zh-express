@@ -6,7 +6,7 @@ let host_dev_localhost = 'http://127.0.0.1:8443/ZHExpressServer';
 let host_live = 'http://115.159.77.50/ZHExpressServer';
 
 //当前使用域名
-var host = host_dev_localhost;
+var host = host_dev;
 
 //----------接口-------------//
 //登录
