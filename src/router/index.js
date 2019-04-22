@@ -16,7 +16,7 @@ export const constantRouter = [
 
 
 let availableRouter = new Router({
-    mode: 'history',
+    // mode: 'history',
     base: process.env.BASE_URL,
     // base: 'zhexpress',
     scrollBehavior: () => ({y: 0}),
@@ -24,4 +24,3 @@ let availableRouter = new Router({
 })
 
 export default availableRouter
-

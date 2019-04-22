@@ -3,10 +3,10 @@
 //域名配置
 let host_dev = 'http://120.26.48.110/ZHExpressServer';
 let host_dev_localhost = 'http://127.0.0.1:8443/ZHExpressServer';
-let host_live = 'http://115.159.77.50/ZHExpressServer';
+let host_live = 'http://log.cloudyotech.com/ZHExpressServer';
 
 //当前使用域名
-var host = host_dev;
+var host = host_live;
 
 //----------接口-------------//
 //登录

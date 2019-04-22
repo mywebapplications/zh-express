@@ -128,10 +128,11 @@
                     <el-table-column
                             prop="pic_num"
                             label="图片"
-                            width="160">
+                            width="200">
 
                         <template slot-scope="scope">
-                            <a :href="scope.row.pic_addr" target="_blank">查看图片</a>
+                            <a v-if="scope.row.pic_num != -1" :href="scope.row.pic_addr" target="_blank">查看图片</a>
+                            <p v-else style="font-size: 12px; color: red">手动添加条码，无法查看图片</p>
                         </template>
 
                     </el-table-column>
@@ -152,15 +153,15 @@
                             {{scope.row.updatetime | parseTime}}
                         </template>
                     </el-table-column>
-                    <el-table-column
-                            fixed="right"
-                            label="操作"
-                            width="120">
-                        <template slot-scope="scope">
-                            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                            <el-button type="text" size="small">编辑</el-button>
-                        </template>
-                    </el-table-column>
+                    <!--<el-table-column-->
+                            <!--fixed="right"-->
+                            <!--label="操作"-->
+                            <!--width="120">-->
+                        <!--<template slot-scope="scope">-->
+                            <!--<el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>-->
+                            <!--<el-button type="text" size="small">编辑</el-button>-->
+                        <!--</template>-->
+                    <!--</el-table-column>-->
                 </el-table>
             </div>
 
@@ -357,7 +358,14 @@
                             message: f.result,
                             type: 'error'
                         })
-                    }, null)
+                    },
+                    function onLogout(o) {
+                        _this.$message({
+                            message: o.result,
+                            type: 'error'
+                        })
+                        _this.logout()
+                    })
             },
 
             //解析列表数据
