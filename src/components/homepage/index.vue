@@ -78,7 +78,7 @@
                 </el-date-picker>
 
 
-                <el-button type="primary" @click="queryDataList(pageSize, pageNum)" icon="el-icon-search"
+                <el-button type="primary" @click="handlePageChange(1)" icon="el-icon-search"
                            style="margin-left: 20px">查询
                 </el-button>
 
@@ -173,6 +173,7 @@
                     layout="prev, pager, next"
                     :total="sum_number"
                     :page-size="pageSize"
+                    :current-page="pageNum"
                     @current-change="handlePageChange">
             </el-pagination>
         </el-row>
@@ -327,7 +328,6 @@
 
             //分页选择页面
             handlePageChange(i) {
-                console.log("change page")
                 this.pageNum = i
                 this.queryDataList(this.pageSize, i)
             },
