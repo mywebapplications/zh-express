@@ -7,7 +7,7 @@
             <el-col :span="24" class="topbar">
                 <el-col :span="10" class="logo" :class="isCollapse?'logo-collapse-width':'logo-width'"
                         style="text-align: center; width: 60px;">
-                    <!--<img src="../assets/image/img_logo.png" style="width: 45px; height: 45px; vertical-align: middle; background: rgba(255,255,255,0.55); border-radius: 10px;">-->
+                    <!--<img src="../../assets/logo.png" style="width: 45px; height: 45px; vertical-align: middle; background: rgba(255,255,255,0.55); border-radius: 10px;">-->
 
                     <div class="sys_title">智慧物流系统</div>
                 </el-col>
